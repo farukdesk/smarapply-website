@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>SmartApply – Analyzer Test</title>
+  <style>
+    body { font-family: system-ui, Arial; max-width: 720px; margin: 24px auto; }
+    label { display:block; margin: 12px 0 6px; }
+    textarea, input { width: 100%; padding: 10px; box-sizing: border-box; }
+    button { margin-top: 16px; padding: 12px 16px; font-weight: 600; }
+    pre { background: #f6f8fa; padding: 14px; overflow:auto; border: 1px solid #e5e7eb; }
+  </style>
+</head>
+<body>
+  <h2>SmartApply – Cover Letter Analyzer (Test)</h2>
+
+  <label>Your Cover Letter</label>
+  <textarea id="coverLetter" rows="5">Hello, this is a short test cover letter.</textarea>
+
+  <label>Job Title</label>
+  <input id="jobTitle" value="Frontend Developer" />
+
+  <label>Job Description</label>
+  <textarea id="jobDescription" rows="4">We need someone strong in React and UX.</textarea>
+
+  <label>License Key (must exist & be active in DB)</label>
+  <input id="licenseKey" value="YOUR_ACTIVE_KEY" />
+
+  <button id="go">Analyze Cover Letter</button>
+
+  <h3>Response</h3>
+  <pre id="out">{}</pre>
+
+<script>
+const API_URL = "https://smartapplypro.com/api/cover-letter-analysis.php";
+
+document.getElementById('go').addEventListener('click', async () => {
+  const payload = {
+    coverLetter: document.getElementById('coverLetter').value,
+    jobTitle: document.getElementById('jobTitle').value,
+    jobDescription: document.getElementById('jobDescription').value,
+    licenseKey: document.getElementById('licenseKey').value
+  };
+
+  const out = document.getElementById('out');
+  out.textContent = "Loading...";
+
+  try {
+    const res = await fetch(API_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+
+    const text = await res.text(); // <-- get raw text first
+    let parsed;
+    try { parsed = JSON.parse(text); } catch(e) { parsed = { parseError: String(e), raw: text }; }
+    out.textContent = JSON.stringify({ status: res.status, ok: res.ok, headers: Object.fromEntries(res.headers.entries()), data: parsed }, null, 2);
+  } catch (err) {
+    out.textContent = JSON.stringify({ fetchError: String(err) }, null, 2);
+  }
+});
+</script>
+
+</body>
+</html>
