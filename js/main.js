@@ -558,7 +558,7 @@ async function handleStripePayment(customerData) {
         },
         body: JSON.stringify({
             paymentMethodId: paymentMethod.id,
-            amount: currentPurchase.amount,
+            amount: currentPurchase.amountUSD,
             currency: 'usd',
             planType: currentPurchase.plan,
             customer: customerData
