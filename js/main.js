@@ -601,7 +601,7 @@ async function handleBkashPayment(customerData, formData) {
             'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-            amount: currentPurchase.amount,
+            amount: currentPurchase.amountBDT,
             currency: 'BDT',
             planType: currentPurchase.plan,
             customer: customerData,
@@ -645,7 +645,7 @@ async function handleNagadPayment(customerData, formData) {
             'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-            amount: currentPurchase.amount,
+            amount: currentPurchase.amountBDT,
             currency: 'BDT',
             planType: currentPurchase.plan,
             customer: customerData,
@@ -688,15 +688,17 @@ function showBkashSuccessModal(result) {
         amount.textContent = `৳${currentPurchase.amountBDT}`;
     }
     
-    modal.style.display = 'block';
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
 }
 
 // Close Bkash success modal
 function closeBkashSuccessModal() {
     const modal = document.getElementById('bkash-success-modal');
     if (modal) {
-        modal.style.display = 'none';
+        modal.classList.remove('active');
     }
+    document.body.style.overflow = '';
 }
 
 // Check order status - updated for PHP backend
@@ -864,6 +866,7 @@ window.scrollToSection = scrollToSection;
 window.initiatePurchase = initiatePurchase;
 window.closePaymentModal = closePaymentModal;
 window.closeSuccessModal = closeSuccessModal;
+window.closeBkashSuccessModal = closeBkashSuccessModal;
 // Handle contact form submission
 async function handleContactForm(event) {
     event.preventDefault();
